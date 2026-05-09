@@ -1,0 +1,1313 @@
+﻿<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT. Rosalia Indah Transport - Situs Resmi</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzAwNzJCRSIgcng9IjI1Ii8+PHJlY3QgeD0iNSIgeT0iNSIgd2lkdGg9IjkwIiBoZWlnaHQ9IjkwIiBmaWxsPSIjRkZEMjAwIiByeD0iMjAiLz48dGV4dCB4PSI1MCIgeT0iNzAiIGZvbnQtc2l6ZT0iNTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNFMzE4MzciIHRleHQtYW5jaG9yPSJtaWRkbGUiPnJpPC90ZXh0Pjwvc3ZnPg==">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: { brand: { 500: '#E85B2A', 600: '#D04A1D', 900: '#1A1A1A' } },
+                    transitionTimingFunction: { 'out-expo': 'cubic-bezier(0.16, 1, 0.3, 1)' }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Smooth Animations */
+        .smooth-all { transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .hero-slide { opacity: 0; transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none; transform: scale(1.05); }
+        .hero-slide.active { opacity: 1; pointer-events: auto; transform: scale(1); }
+        .reveal-up { opacity: 0; transform: translateY(50px); transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1), opacity 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal-up.active { opacity: 1; transform: translateY(0); }
+
+        /* ================= CUSTOM PREMIUM BUS LOADER ================= */
+        #initialLoader { transition: opacity 0.8s ease-out, visibility 0.8s ease-out; }
+        @keyframes bus-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+        @keyframes road-move { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        @keyframes spin-slow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .animate-bus-bounce { animation: bus-bounce 0.8s infinite ease-in-out; }
+        .animate-road-move { animation: road-move 0.6s infinite linear; }
+        .animate-spin-slow { animation: spin-slow 1.5s infinite linear; }
+
+        /* Modals & Menus */
+        .modal-overlay { opacity: 0; visibility: hidden; backdrop-filter: blur(0px); transition: visibility 0.4s, opacity 0.4s, backdrop-filter 0.4s; z-index: 9999; }
+        .modal-overlay.active { opacity: 1; visibility: visible; backdrop-filter: blur(5px); }
+        .modal-box { transform: scale(0.95) translateY(20px); opacity: 0; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s; }
+        .modal-overlay.active .modal-box { transform: scale(1) translateY(0); opacity: 1; }
+        
+        /* Dropdown Setup */
+        .dropdown-menu { 
+            opacity: 0; visibility: hidden; transform: translateY(10px) scale(0.98); 
+            transition: visibility 0.3s, opacity 0.3s, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
+            transform-origin: top; z-index: 999; 
+        }
+        .dropdown-menu.active { opacity: 1; visibility: visible; transform: translateY(0) scale(1); pointer-events: auto; }
+
+        /* TIKET CARD - VERSI ELEGAN & PADAT */
+        .result-card { 
+            opacity: 0; transform: translateY(20px); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s, box-shadow 0.3s; 
+            background: #ffffff; border: 1px solid #e2e8f0; border-top: 4px solid #1e293b; 
+        }
+        .result-card.premium-border { border-top-color: #eab308; } 
+        .result-card.show { opacity: 1; transform: translateY(0); }
+        .result-card:hover { box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); border-left: 1px solid #E85B2A; border-right: 1px solid #E85B2A; border-bottom: 1px solid #E85B2A; transform: translateY(-4px);}
+
+        .carousel-track, .armada-track { display: flex; transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        /* ================= AREA PEMESANAN (REALISTIS YANG DISUKA) ================= */
+        .bus-layout-container {
+            border: 4px solid #cbd5e1; border-radius: 40px 40px 20px 20px; padding: 20px;
+            background: #f8fafc; position: relative; box-shadow: inset 0 4px 20px rgba(0,0,0,0.02);
+        }
+        .bus-steering-wheel { width: 30px; height: 30px; border: 4px solid #94a3b8; border-radius: 50%; position: relative; }
+        .bus-steering-wheel::after { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 4px; background: #94a3b8; transform: translateY(-50%); }
+        .bus-steering-wheel::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: #94a3b8; transform: translateX(-50%); }
+        
+        .seat { 
+            width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 800; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); border: 2px solid transparent;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); position: relative; overflow: hidden;
+        }
+        .seat::before { content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 8px; border-radius: 0 0 6px 6px; opacity: 0.2; }
+        .seat.available { background-color: #ffffff; color: #475569; border-color: #cbd5e1; }
+        .seat.available::before { background-color: #475569; }
+        .seat.available:hover { background-color: #f1f5f9; border-color: #94a3b8; transform: translateY(-3px) scale(1.05); box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.1); }
+        .seat.booked { background-color: #fef2f2; color: #ef4444; border-color: #fca5a5; cursor: not-allowed; opacity: 0.6; }
+        .seat.booked::before { background-color: #ef4444; }
+        .seat.selected { background-color: #E85B2A; color: white; border-color: #D04A1D; transform: translateY(-3px) scale(1.05); box-shadow: 0 8px 15px -3px rgba(232, 91, 42, 0.4); }
+        .seat.selected::before { background-color: #ffffff; opacity: 0.3; }
+
+        .pay-method { 
+            border: 2px solid #e2e8f0; background: #ffffff; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); 
+            cursor: pointer; border-radius: 16px; position: relative; overflow: hidden;
+        }
+        .pay-method::after {
+            content: '✓'; position: absolute; top: -20px; right: -20px; width: 40px; height: 40px; 
+            background: #E85B2A; color: white; border-radius: 50%; display: flex; align-items: flex-end; justify-content: flex-start;
+            padding-bottom: 8px; padding-left: 10px; font-weight: bold; font-size: 14px; transition: all 0.3s ease; opacity: 0;
+        }
+        .pay-method:hover { border-color: #cbd5e1; transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
+        .pay-method.active { border-color: #E85B2A; background-color: #fffaf9; transform: translateY(-4px); box-shadow: 0 12px 30px -5px rgba(232, 91, 42, 0.2); ring: 2px; }
+        .pay-method.active::after { top: -10px; right: -10px; opacity: 1; }
+        
+        .logo-bca { font-family: 'Times New Roman', serif; font-style: italic; color: #003399; letter-spacing: -1px; font-weight: 900; }
+        .logo-mandiri { color: #003399; font-weight: 900; letter-spacing: -1px; position: relative; }
+        .logo-mandiri-ribbon { position: absolute; top: -5px; right: -15px; width: 12px; height: 12px; background: #ffcc00; border-radius: 50% 0 50% 0; }
+        .logo-qris { color: #ed1c24; font-weight: 900; font-style: italic; letter-spacing: 1px; display: flex; align-items: center;}
+        .logo-qris::before { content: ''; display: inline-block; width: 14px; height: 14px; border: 3px solid #ed1c24; border-radius: 4px; margin-right: 4px;}
+        .logo-gopay { color: #00a5cf; font-weight: 900; font-family: Arial, sans-serif; letter-spacing: -1px;}
+        .logo-shopee { color: #ee4d2d; font-weight: 800; font-family: sans-serif;}
+
+        /* Promo Shimmer */
+        .promo-shimmer {
+            background: linear-gradient(90deg, #fee2e2 0%, #ffffff 50%, #fee2e2 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite linear;
+        }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+        /* Success & Receipt */
+        .success-circle { stroke-dasharray: 251; stroke-dashoffset: 251; animation: strokeCircle 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .success-check { stroke-dasharray: 75; stroke-dashoffset: 75; animation: strokeCheck 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards; }
+        @keyframes strokeCircle { 100% { stroke-dashoffset: 0; } }
+        @keyframes strokeCheck { 100% { stroke-dashoffset: 0; } }
+        .receipt-paper {
+            font-family: 'Courier New', Courier, monospace; background: #fdfdfd; color: #111; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            background-image: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(200,200,200,0.05) 50%, rgba(255,255,255,0) 100%), linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(200,200,200,0.05) 50%, rgba(255,255,255,0) 100%);
+        }
+        .receipt-paper::before { content: ""; position: absolute; top: -10px; left: 0; right: 0; height: 10px; background: linear-gradient(-45deg, #fdfdfd 5px, transparent 0), linear-gradient(45deg, #fdfdfd 5px, transparent 0); background-size: 10px 10px; }
+        .receipt-paper::after { content: ""; position: absolute; bottom: -10px; left: 0; right: 0; height: 10px; background: linear-gradient(-135deg, #fdfdfd 5px, transparent 0), linear-gradient(135deg, #fdfdfd 5px, transparent 0); background-size: 10px 10px; }
+        .receipt-dashed { border-top: 1.5px dashed #333; margin: 12px 0; }
+        .receipt-header-box { background: #111; color: #fff; padding: 6px; font-weight: bold; text-align: center; letter-spacing: 1px; }
+
+        /* FAQ */
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        details[open] summary ~ * { animation: sweep .5s ease-in-out; }
+        @keyframes sweep { 0% {opacity: 0; margin-top: -10px} 100% {opacity: 1; margin-top: 0px} }
+    </style>
+</head>
+<body class="bg-[#F4F6F9] text-slate-800 antialiased font-sans relative overflow-x-hidden pt-0">
+
+    <div id="initialLoader" class="fixed inset-0 z-[9999] bg-[#0f172a] flex flex-col items-center justify-center transition-all duration-1000 ease-in-out">
+        <div class="relative w-72 h-40 flex flex-col items-center justify-end">
+            <div class="w-36 relative z-10 animate-bus-bounce drop-shadow-[0_15px_20px_rgba(232,91,42,0.3)]">
+                <svg viewBox="0 0 512 256" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto">
+                    <path fill="#ffffff" d="M464,128c0-35.3-28.7-64-64-64H80c-26.5,0-48,21.5-48,48v80c0,26.5,21.5,48,48,48h16c0,26.5,21.5,48,48,48s48-21.5,48-48h128c0,26.5,21.5,48,48,48s48-21.5,48-48h16c26.5,0,48-21.5,48-48V128z"/>
+                    <path fill="#E85B2A" d="M400,64H80c-26.5,0-48,21.5-48,48v48h448v-32C480,92.7,444.3,64,400,64z M112,144H64v-32h48V144z M192,144h-48v-32h48V144z M272,144h-48v-32h48V144z M352,144h-48v-32h48V144z M432,144h-48v-32h48V144z"/>
+                    <circle fill="#0f172a" cx="144" cy="224" r="24"/>
+                    <circle fill="#cbd5e1" cx="144" cy="224" r="10" class="animate-spin-slow" style="transform-origin: 144px 224px;"/>
+                    <circle fill="#0f172a" cx="368" cy="224" r="24"/>
+                    <circle fill="#cbd5e1" cx="368" cy="224" r="10" class="animate-spin-slow" style="transform-origin: 368px 224px;"/>
+                </svg>
+            </div>
+            <div class="w-56 h-1 bg-slate-800 mt-2 relative overflow-hidden rounded-full">
+                <div class="absolute w-[200%] h-full animate-road-move flex items-center justify-around">
+                    <div class="w-10 h-full bg-brand-500 rounded-full"></div>
+                    <div class="w-16 h-full bg-brand-500 rounded-full"></div>
+                    <div class="w-8 h-full bg-brand-500 rounded-full"></div>
+                    <div class="w-12 h-full bg-brand-500 rounded-full"></div>
+                    <div class="w-10 h-full bg-brand-500 rounded-full"></div>
+                    <div class="w-16 h-full bg-brand-500 rounded-full"></div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-10 relative flex flex-col items-center">
+            <h2 class="font-black text-white text-xl tracking-[0.4em] uppercase drop-shadow-md">Rosalia Indah</h2>
+            <p class="text-[10px] text-slate-400 font-bold tracking-widest mt-2 uppercase">Menyiapkan Pengalaman Premium</p>
+        </div>
+    </div>
+
+    <div id="loadingSearchOverlay" class="modal-overlay fixed inset-0 z-[200] bg-white/95 flex flex-col items-center justify-center">
+        <div class="modal-box w-16 h-16 mb-6 flex items-center justify-center animate-bounce">
+            <svg viewBox="0 0 100 100" class="w-full h-full"><rect width="100" height="100" fill="#0072BE" rx="25"/><rect x="5" y="5" width="90" height="90" fill="#FFD200" rx="20"/><text x="50" y="70" font-size="50" font-family="Arial" font-weight="bold" fill="#E31837" text-anchor="middle">ri</text></svg>
+        </div>
+        <p class="mt-2 font-black text-slate-800 tracking-widest uppercase text-sm modal-box">Mencari Jadwal Terbaik...</p>
+    </div>
+
+    <div id="successModal" class="modal-overlay fixed inset-0 z-[250] bg-white/95 flex flex-col items-center justify-center">
+        <div class="modal-box flex flex-col items-center">
+            <svg class="relative z-10 w-28 h-28 text-green-500 mb-5" viewBox="0 0 100 100">
+                <circle class="success-circle" cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="8"/><path class="success-check" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" d="M30 50 l15 15 l25 -30"/>
+            </svg>
+            <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Pembayaran Berhasil!</h2>
+            <p class="text-slate-500 font-medium animate-pulse text-sm">Menyiapkan E-Tiket Anda...</p>
+        </div>
+    </div>
+
+    <div id="receiptModal" class="modal-overlay fixed inset-0 z-[300] bg-slate-900/90 flex items-center justify-center p-4 overflow-y-auto pt-20 pb-24">
+        <div class="receipt-paper modal-box w-full max-w-[360px] p-6 mx-auto">
+            <div class="text-center mb-5">
+                <div class="font-bold text-lg mb-1 tracking-widest">CASH RECEIPT</div>
+                <div class="receipt-header-box text-xl">ROSALIA INDAH</div>
+                <p class="text-[11px] mt-3 leading-tight font-bold">(0271) 825-173<br>JL. RAYA SOLO - SRAGEN KM 7.5<br>NPWP: 01.234.567.8-910.000</p>
+            </div>
+            <div class="receipt-dashed"></div>
+            <div class="text-[12px] leading-relaxed font-bold uppercase">
+                <div class="flex justify-between"><span>TGL:</span><span id="struk-tgl">01.05.26-17.47</span></div>
+                <div class="flex justify-between"><span>TRX:</span><span id="struk-trx">RI-88563</span></div>
+                <div class="flex justify-between"><span>PAY:</span><span id="struk-pay">BCA VIRTUAL ACCT</span></div>
+            </div>
+            <div class="receipt-dashed"></div>
+            <div class="text-center font-bold text-[14px] my-4 uppercase tracking-widest">TIKET PENUMPANG</div>
+            <div class="text-[13px] leading-relaxed space-y-1.5 font-bold uppercase">
+                <div class="flex justify-between"><span>Rute</span><span id="struk-rute">MLG-JAK</span></div>
+                <div class="flex justify-between"><span>Jam</span><span id="struk-berangkat">18:30 WIB</span></div>
+                <div class="flex justify-between"><span>Kelas</span><span id="struk-kelas">EXECUTIVE PLUS</span></div>
+                <div class="flex justify-between border-b border-black pb-2 mt-2"><span>Nama</span><span id="struk-nama" class="truncate max-w-[150px] text-right">RAYYAN ISMAIL</span></div>
+                <div class="flex justify-between pt-2 items-center"><span>No Kursi</span><span id="struk-kursi" class="text-lg">36</span></div>
+                <div class="flex justify-between pt-2 items-center text-lg mt-2 border-t-2 border-black"><span>TOTAL</span><span id="struk-total">Rp 428.000</span></div>
+            </div>
+            <div class="receipt-dashed mt-5"></div>
+            <div class="text-center text-[11px] mt-5 font-bold">
+                <p>SIMPAN STRUK INI SEBAGAI<br>BUKTI PEMESANAN RESMI.</p>
+                <p class="mt-3">*** TERIMA KASIH ***</p>
+            </div>
+            <div class="absolute -bottom-20 left-0 w-full flex justify-center">
+                <button onclick="closeReceipt()" class="bg-brand-500 text-white font-sans font-bold py-3 px-8 rounded-full shadow-[0_10px_20px_rgba(232,91,42,0.4)] hover:scale-110 active:scale-95 transition-all">Selesai & Lihat Tiket</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="riwayatModal" class="modal-overlay fixed inset-0 z-[150] bg-black/60 flex items-center justify-end">
+        <div class="bg-[#F8F9FA] w-full max-w-md h-full shadow-2xl flex flex-col transform translate-x-full transition-transform duration-700 ease-out-expo" id="riwayatPanel">
+            <div class="bg-[#0f172a] text-white p-6 flex justify-between items-center shadow-md z-10 relative">
+                <h2 class="font-extrabold text-xl flex items-center gap-2"><i data-lucide="ticket" class="w-6 h-6 text-brand-500"></i> Tiket Rosalia Indah</h2>
+                <button onclick="toggleRiwayatModal()" class="hover:bg-white/20 p-2 rounded-full transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50 relative" id="riwayatContainer">
+                <div class="text-center text-slate-400 font-medium mt-20 flex flex-col items-center">
+                    <i data-lucide="inbox" class="w-16 h-16 mb-4 opacity-50"></i>
+                    <p>Belum ada tiket Rosalia Indah yang dipesan.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav id="mainNavbar" class="fixed top-0 w-full z-[100] px-6 lg:px-12 py-5 flex justify-between items-center bg-gradient-to-b from-slate-900/90 to-transparent transition-all duration-300">
+        <a href="#heroSection" class="flex items-center gap-3 bg-white pl-2 pr-5 py-2 rounded-full shadow-lg cursor-pointer hover:scale-105 transition-transform duration-500">
+            <div class="w-8 h-8"><svg viewBox="0 0 100 100" class="w-full h-full"><rect width="100" height="100" fill="#0072BE" rx="25"/><rect x="5" y="5" width="90" height="90" fill="#FFD200" rx="20"/><text x="50" y="70" font-size="50" font-family="Arial" font-weight="bold" fill="#E31837" text-anchor="middle">ri</text></svg></div>
+            <div class="flex flex-col"><span class="text-brand-500 font-black text-[13px] leading-none tracking-tight">ROSALIA INDAH</span><span class="text-[7px] text-slate-500 font-bold tracking-widest uppercase mt-0.5">Mitra Setia Perjalanan Anda</span></div>
+        </a>
+        <div class="hidden lg:flex items-center gap-7 text-[11px] font-bold tracking-wider uppercase text-white/90">
+            <a href="#heroSection" class="hover:text-brand-500 transition-colors">BERANDA</a>
+            <a href="#bookingFormSection" class="hover:text-brand-500 transition-colors">PERJALANAN</a>
+            <a href="#armadaSection" class="hover:text-brand-500 transition-colors">KELAS ARMADA</a>
+            <a href="#beritaSection" class="hover:text-brand-500 transition-colors">BERITA</a>
+            <a href="#faqSection" class="hover:text-brand-500 transition-colors">BANTUAN</a>
+        </div>
+        <div class="hidden md:flex items-center gap-3 text-sm font-bold">
+            <button onclick="toggleRiwayatModal()" class="flex items-center gap-2 text-white bg-black/30 px-5 py-2 rounded-full backdrop-blur-sm border border-white/20 hover:bg-black/50 transition-colors shadow-md">
+                <i data-lucide="ticket" class="w-4 h-4"></i> Tiket Saya <span id="badgeTiket" class="bg-brand-500 text-white text-[10px] px-1.5 py-0.5 rounded-full hidden smooth-all">0</span>
+            </button>
+            <button class="text-white hover:text-brand-500 transition-colors ml-2 px-3">Masuk</button>
+            <button class="px-6 py-2 rounded-full border-2 border-white text-white hover:bg-white hover:text-slate-900 transition-colors shadow-sm hover:-translate-y-1 transform">Daftar</button>
+        </div>
+    </nav>
+
+    <section class="relative w-full bg-slate-900 overflow-hidden smooth-all" style="height: 75vh; min-height: 600px;" id="heroSection">
+        <div class="absolute inset-0 w-full h-full">
+            <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=2069&auto=format&fit=crop" class="hero-slide active absolute inset-0 w-full h-full object-cover">
+            <img src="https://images.unsplash.com/photo-1570125909232-eb263c188f7e?q=80&w=2071&auto=format&fit=crop" class="hero-slide absolute inset-0 w-full h-full object-cover">
+            <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop" class="hero-slide absolute inset-0 w-full h-full object-cover">
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent smooth-all"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent smooth-all"></div>
+        
+        <div class="relative z-10 h-full flex flex-col justify-center px-6 lg:px-20 max-w-7xl mx-auto transition-transform duration-1000" id="heroTextContainer">
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight mb-4 tracking-tighter drop-shadow-2xl mt-10">Perjalanan Premium,<br><span class="text-brand-500">Kenyamanan Maksimal.</span></h1>
+            <p class="text-lg text-slate-200 max-w-lg font-medium drop-shadow-md">Armada eksekutif Rosalia Indah siap mengantar Anda ke berbagai destinasi di Jawa dan Sumatera dengan fasilitas terbaik di kelasnya.</p>
+        </div>
+    </section>
+
+    <section class="relative z-20 -mt-24 px-4 lg:px-16 max-w-6xl mx-auto mb-16 smooth-all" id="bookingFormSection">
+        <div class="bg-white rounded-[24px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] p-2 relative border border-slate-100">
+            <div class="flex items-center px-6 py-4 border-b border-slate-50">
+                <div class="flex items-center gap-2 font-black text-sm text-slate-800 bg-brand-50 text-brand-600 px-4 py-1.5 rounded-full">
+                    <i data-lucide="bus" class="w-4 h-4"></i> Cari Tiket Bus
+                </div>
+            </div>
+            
+            <div class="p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-center relative">
+                <div class="lg:col-span-1 bg-slate-50 border border-slate-100 rounded-2xl p-3 flex items-center gap-4 hover:border-brand-500 hover:bg-white transition-colors cursor-pointer group shadow-sm" onclick="openLocationModal('Asal')">
+                    <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm shrink-0 group-hover:bg-brand-50 group-hover:text-brand-500 transition-colors"><i data-lucide="map-pin" class="w-5 h-5 text-slate-400"></i></div>
+                    <div class="w-full overflow-hidden">
+                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Keberangkatan</div>
+                        <div class="font-extrabold text-sm text-slate-800 truncate" id="textAsal">Tingkir</div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1 bg-slate-50 border border-slate-100 rounded-2xl p-3 flex items-center gap-4 hover:border-brand-500 hover:bg-white transition-colors cursor-pointer group shadow-sm" onclick="openLocationModal('Tujuan')">
+                    <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm shrink-0 group-hover:bg-brand-50 group-hover:text-brand-500 transition-colors"><i data-lucide="map-pin" class="w-5 h-5 text-slate-400"></i></div>
+                    <div class="w-full overflow-hidden">
+                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Tujuan</div>
+                        <div class="font-extrabold text-sm text-slate-800 truncate" id="textTujuan">Jakarta Pusat</div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1 bg-slate-50 border border-slate-100 rounded-2xl p-3 flex items-center gap-4 hover:border-brand-500 hover:bg-white transition-colors group shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm shrink-0 group-hover:bg-brand-50 group-hover:text-brand-500 transition-colors"><i data-lucide="calendar" class="w-5 h-5 text-slate-400"></i></div>
+                    <div class="w-full">
+                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Tanggal Pergi</div>
+                        <input type="date" id="inputTanggal" class="w-full bg-transparent font-extrabold text-sm text-slate-800 outline-none cursor-pointer" value="2026-05-01">
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1 grid grid-cols-2 gap-3 relative h-full">
+                    <div class="relative w-full h-full">
+                        <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3 flex items-center gap-2 hover:border-brand-500 hover:bg-white transition-colors cursor-pointer h-full shadow-sm" onclick="toggleDropdown('dropPenumpang', event)">
+                            <div class="overflow-hidden">
+                                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Kursi</div>
+                                <div class="font-extrabold text-sm text-slate-800 truncate" id="textPenumpang">1 Orang</div>
+                            </div>
+                        </div>
+                        <div id="dropPenumpang" class="dropdown-menu absolute top-full left-0 mt-2 w-40 bg-white border border-slate-100 rounded-xl shadow-xl z-50 overflow-hidden">
+                            <ul class="py-1 text-sm text-slate-700">
+                                <li class="px-5 py-3 hover:bg-brand-50 hover:text-brand-600 cursor-pointer font-bold transition-colors border-b border-slate-50" onclick="selectOption('textPenumpang', '1 Orang', 'dropPenumpang', event)">1 Orang</li>
+                                <li class="px-5 py-3 hover:bg-brand-50 hover:text-brand-600 cursor-pointer font-bold transition-colors border-b border-slate-50" onclick="selectOption('textPenumpang', '2 Orang', 'dropPenumpang', event)">2 Orang</li>
+                                <li class="px-5 py-3 hover:bg-brand-50 hover:text-brand-600 cursor-pointer font-bold transition-colors border-b border-slate-50" onclick="selectOption('textPenumpang', '3 Orang', 'dropPenumpang', event)">3 Orang</li>
+                                <li class="px-5 py-3 hover:bg-brand-50 hover:text-brand-600 cursor-pointer font-bold transition-colors" onclick="selectOption('textPenumpang', '4 Orang', 'dropPenumpang', event)">4 Orang</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="relative w-full h-full">
+                        <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3 flex items-center gap-2 hover:border-brand-500 hover:bg-white transition-colors cursor-pointer h-full shadow-sm" onclick="toggleDropdown('dropKelas', event)">
+                            <div class="overflow-hidden">
+                                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Kelas</div>
+                                <div class="font-extrabold text-sm text-slate-800 truncate" id="textKelas">Semua</div>
+                            </div>
+                        </div>
+                        <div id="dropKelas" class="dropdown-menu absolute top-full right-0 mt-2 w-56 bg-white border border-slate-100 rounded-xl shadow-xl z-50 overflow-hidden">
+                            <ul class="py-1 text-sm text-slate-700">
+                                <li class="px-5 py-3 hover:bg-brand-50 cursor-pointer font-bold border-b border-slate-50" onclick="selectOption('textKelas', 'Semua Kelas', 'dropKelas', event)">Semua Kelas</li>
+                                <li class="px-5 py-3 hover:bg-yellow-50 hover:text-yellow-700 cursor-pointer font-bold border-b border-slate-50" onclick="selectOption('textKelas', 'First Class', 'dropKelas', event)">First Class Double Decker</li>
+                                <li class="px-5 py-3 hover:bg-brand-50 cursor-pointer font-bold border-b border-slate-50" onclick="selectOption('textKelas', 'Executive Plus', 'dropKelas', event)">Executive Plus</li>
+                                <li class="px-5 py-3 hover:bg-brand-50 cursor-pointer font-bold" onclick="selectOption('textKelas', 'VIP Class', 'dropKelas', event)">VIP Class</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1 h-full">
+                    <button onclick="cariTiket()" class="w-full h-full min-h-[60px] bg-[#0f172a] hover:bg-brand-500 text-white font-extrabold rounded-2xl flex items-center justify-center gap-2 shadow-[0_10px_25px_rgba(15,23,42,0.3)] hover:shadow-[0_10px_25px_rgba(232,91,42,0.3)] hover:-translate-y-1 transition-all duration-300 text-sm tracking-wide uppercase">
+                        <i data-lucide="search" class="w-5 h-5"></i> Cari Jadwal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="locationModal" class="modal-overlay fixed inset-0 z-[100] bg-slate-900/60 flex items-center justify-center p-4">
+        <div class="bg-white modal-box w-full max-w-lg rounded-[24px] shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white">
+                <h3 class="font-extrabold text-xl text-slate-900" id="modalTitle">Pilih Lokasi</h3>
+                <button onclick="closeLocationModal()" class="text-slate-400 hover:text-brand-500 hover:bg-orange-50 p-2 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="p-5 bg-slate-50 border-b border-slate-100">
+                <div class="bg-white border border-slate-200 rounded-xl flex items-center px-4 py-3 focus-within:border-brand-500 focus-within:shadow-md transition-all">
+                    <i data-lucide="search" class="w-5 h-5 text-slate-400"></i>
+                    <input type="text" id="searchInput" placeholder="Cari terminal keberangkatan..." class="w-full bg-transparent outline-none ml-3 text-sm font-medium" onkeyup="filterLocations()">
+                </div>
+            </div>
+            <div class="overflow-y-auto flex-1 p-5 space-y-5 bg-white" id="locationListContainer"></div>
+        </div>
+    </div>
+
+    <section id="searchResultsSection" class="hidden max-w-6xl mx-auto px-4 lg:px-6 mb-32 min-h-[500px] smooth-all">
+        
+        <div class="mb-6 flex flex-col gap-4">
+            <button onclick="kembaliKeBeranda()" class="w-fit flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-brand-500 transition-colors py-2 group">
+                <div class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center group-hover:border-brand-500 group-hover:bg-brand-50 transition-colors shadow-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i></div>
+                Kembali ke Pencarian Awal
+            </button>
+            
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <div>
+                    <h2 class="text-2xl font-black text-[#0f172a] flex items-center gap-3">
+                        <span id="resAsal">Tingkir</span> 
+                        <i data-lucide="arrow-right" class="w-5 h-5 text-brand-500 shrink-0"></i>
+                        <span id="resTujuan">Jakarta Pusat</span>
+                    </h2>
+                    <p class="text-sm text-slate-500 font-medium mt-1"><span id="resTanggal">01 Mei 2026</span> • Menemukan <span id="totalBus" class="font-bold text-brand-500">0</span> armada tersedia</p>
+                </div>
+                
+                <div class="mt-4 md:mt-0 relative">
+                    <button onclick="toggleDropdown('dropSort', event)" class="px-5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-slate-100 transition-colors shadow-sm" id="sortLabel">
+                        <i data-lucide="sliders-horizontal" class="w-4 h-4 text-slate-500"></i> Sortir Terawal
+                    </button>
+                    <div id="dropSort" class="dropdown-menu absolute right-0 mt-2 w-48 bg-white border border-slate-100 rounded-xl shadow-xl z-50 overflow-hidden">
+                        <ul class="py-1 text-sm text-slate-700">
+                            <li class="px-4 py-3 hover:bg-brand-50 cursor-pointer font-bold border-b border-slate-50" onclick="applySort('terawal', event)">Berangkat Terawal</li>
+                            <li class="px-4 py-3 hover:bg-brand-50 cursor-pointer font-bold" onclick="applySort('termurah', event)">Harga Termurah</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="ticketsContainer" class="flex flex-col gap-8">
+            </div>
+    </section>
+
+    <div id="mainContentWrapper" class="smooth-all">
+        
+        <section class="max-w-7xl mx-auto px-4 lg:px-20 mb-24 mt-10 reveal-up">
+            <div class="relative w-full h-[220px] rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.1)] group">
+                <div id="promoCarousel" class="carousel-track h-full w-[300%]">
+                    <div class="w-1/3 h-full relative flex-shrink-0 cursor-pointer transition-transform duration-700 hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-500 flex flex-col justify-center px-12 z-10">
+                            <h2 class="text-3xl lg:text-4xl font-black text-white mb-2 tracking-tight">Siap Antar ke Destinasi Favoritmu!</h2>
+                            <h3 class="text-xl font-bold text-yellow-300 mb-3">#Rosaliaindahaja</h3>
+                            <p class="text-white/90 text-sm font-medium">Titik Keberangkatan Strategis: Jogja, Solo, Surabaya, Malang</p>
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=2069&auto=format&fit=crop" class="absolute right-0 h-full w-1/2 object-cover opacity-20 mix-blend-luminosity">
+                    </div>
+                    <div class="w-1/3 h-full relative flex-shrink-0 cursor-pointer transition-transform duration-700 hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-r from-brand-600 to-orange-400 flex flex-col justify-center px-12 z-10">
+                            <h2 class="text-3xl lg:text-4xl font-black text-white mb-2 tracking-tight">Promo Rosalia Indah: Diskon Spesial</h2>
+                            <h3 class="text-xl font-bold text-white mb-4">Spesial Rute Lintas Sumatera</h3>
+                            <span class="inline-block bg-white text-brand-600 px-4 py-1.5 rounded-full font-bold text-xs w-fit shadow-md">Gunakan Kode: LIBURAN26</span>
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop" class="absolute right-0 h-full w-1/2 object-cover opacity-30 mix-blend-overlay">
+                    </div>
+                    <div class="w-1/3 h-full relative flex-shrink-0 cursor-pointer transition-transform duration-700 hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-r from-slate-900 to-slate-700 flex flex-col justify-center px-12 z-10">
+                            <h2 class="text-3xl lg:text-4xl font-black text-white mb-2 tracking-tight">Double Decker Rosalia Indah</h2>
+                            <h3 class="text-xl font-bold text-yellow-500 mb-3">Kenyamanan Hotel Bintang 5 di Jalan</h3>
+                            <p class="text-slate-300 text-sm">Sleeper seat, AVOD, & Servis Makan Malam</p>
+                        </div>
+                        <img src="https://images.unsplash.com/photo-1570125909232-eb263c188f7e?q=80&w=2071&auto=format&fit=crop" class="absolute right-0 h-full w-1/2 object-cover opacity-40 mix-blend-luminosity">
+                    </div>
+                </div>
+                <div class="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+                    <button class="promo-dot w-3 h-3 rounded-full bg-white/50 active hover:bg-white transition-colors duration-300" onclick="movePromo(0)"></button>
+                    <button class="promo-dot w-3 h-3 rounded-full bg-white/50 hover:bg-white transition-colors duration-300" onclick="movePromo(1)"></button>
+                    <button class="promo-dot w-3 h-3 rounded-full bg-white/50 hover:bg-white transition-colors duration-300" onclick="movePromo(2)"></button>
+                </div>
+            </div>
+        </section>
+
+        <section class="max-w-7xl mx-auto px-4 lg:px-12 mb-32 mt-16 reveal-up" id="armadaSection">
+            <div class="flex justify-between items-end mb-8 px-4">
+                <div>
+                    <h2 class="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight mb-2">Pilihan <span class="text-brand-500">Kelas Armada</span></h2>
+                    <p class="text-sm text-slate-500 max-w-lg">Harga menentukan fasilitas. Pilih kenyamanan yang sesuai dengan kebutuhan perjalanan Anda.</p>
+                </div>
+                <div class="hidden md:flex gap-2">
+                    <button class="w-10 h-10 rounded-full border border-slate-300 flex items-center justify-center hover:bg-brand-50 hover:text-brand-500 hover:border-brand-500 transition-all"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+                    <button class="w-10 h-10 rounded-full border border-slate-300 flex items-center justify-center hover:bg-brand-50 hover:text-brand-500 hover:border-brand-500 transition-all"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+                </div>
+            </div>
+
+            <div class="relative w-full overflow-hidden px-2 py-4">
+                <div class="armada-track gap-6" id="armadaSliderTrack">
+                    <div class="w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] flex-shrink-0 bg-white rounded-[24px] overflow-hidden shadow-lg border-2 border-yellow-400 group relative transform hover:-translate-y-2 transition-all duration-500 cursor-pointer">
+                        <div class="absolute top-4 left-4 bg-yellow-400 text-slate-900 text-[10px] font-black px-3 py-1 rounded shadow-md tracking-widest z-20">TERMEWAH</div>
+                        <div class="h-48 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-slate-900 to-transparent"></div>
+                            <div class="absolute bottom-3 left-5 text-white"><h3 class="text-xl font-black">First Class Double Decker</h3></div>
+                        </div>
+                        <div class="p-5">
+                            <p class="text-xs text-slate-500 mb-4 h-8 font-medium">Privasi total layaknya hotel bintang 5. Ruang kabin personal untuk istirahat sempurna.</p>
+                            <div class="space-y-2.5 mb-5 border-t border-slate-100 pt-4">
+                                <div class="flex items-center gap-3 text-xs font-bold text-slate-700"><div class="w-6 h-6 rounded-full bg-yellow-50 flex items-center justify-center"><i data-lucide="bed-double" class="w-3 h-3 text-yellow-600"></i></div> Sleeper Seat Pribadi 1-1</div>
+                                <div class="flex items-center gap-3 text-xs font-bold text-slate-700"><div class="w-6 h-6 rounded-full bg-yellow-50 flex items-center justify-center"><i data-lucide="utensils" class="w-3 h-3 text-yellow-600"></i></div> Makan Prasmanan & Snack Box</div>
+                                <div class="flex items-center gap-3 text-xs font-bold text-slate-700"><div class="w-6 h-6 rounded-full bg-yellow-50 flex items-center justify-center"><i data-lucide="monitor-play" class="w-3 h-3 text-yellow-600"></i></div> AVOD Premium Sentuh</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] flex-shrink-0 bg-white rounded-[24px] overflow-hidden shadow-md border border-slate-200 group relative transform hover:-translate-y-2 transition-all duration-500 cursor-pointer hover:shadow-xl hover:border-brand-500">
+                        <div class="absolute top-4 left-4 bg-brand-500 text-white text-[10px] font-black px-3 py-1 rounded shadow-md tracking-widest z-20">FAVORIT</div>
+                        <div class="h-48 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=2069&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-slate-900 to-transparent"></div>
+                            <div class="absolute bottom-3 left-5 text-white"><h3 class="text-xl font-black">Executive Plus</h3></div>
+                        </div>
+                        <div class="p-5">
+                            <p class="text-xs text-slate-500 mb-4 h-8 font-medium">Keseimbangan sempurna harga dan kenyamanan. Jarak antar kursi lega bikin bebas pegal.</p>
+                            <div class="space-y-2.5 mb-5 border-t border-slate-100 pt-4">
+                                <div class="flex items-center gap-3 text-xs font-bold text-slate-700"><div class="w-6 h-6 rounded-full bg-orange-50 flex items-center justify-center"><i data-lucide="armchair" class="w-3 h-3 text-brand-500"></i></div> Seat 2-2 Super Lega + Leg Rest</div>
+                                <div class="flex items-center gap-3 text-xs font-bold text-slate-700"><div class="w-6 h-6 rounded-full bg-orange-50 flex items-center justify-center"><i data-lucide="utensils" class="w-3 h-3 text-brand-500"></i></div> Makan Prasmanan Gratis 1x</div>
+                                <div class="flex items-center gap-3 text-xs font-bold text-slate-700"><div class="w-6 h-6 rounded-full bg-orange-50 flex items-center justify-center"><i data-lucide="wifi" class="w-3 h-3 text-brand-500"></i></div> Free WiFi & Bantal Selimut</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] flex-shrink-0 bg-white rounded-[24px] overflow-hidden shadow-md border border-slate-200 group relative transform hover:-translate-y-2 transition-all duration-500 cursor-pointer hover:shadow-xl">
+                        <div class="absolute top-4 left-4 bg-slate-600 text-white text-[10px] font-black px-3 py-1 rounded shadow-md tracking-widest z-20">EKONOMIS</div>
+                        <div class="h-48 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-slate-900 to-transparent"></div>
+                            <div class="absolute bottom-3 left-5 text-white"><h3 class="text-xl font-black">VIP Class</h3></div>
+                        </div>
+                        <div class="p-5">
+                            <p class="text-xs text-slate-500 mb-4 h-8 font-medium">Solusi cerdas buat perjalanan hemat tanpa mengurangi esensi kenyamanan standar Rosalia.</p>
+                            <div class="space-y-2.5 mb-5 border-t border-slate-100 pt-4">
+                                <div class="flex items-center gap-3 text-xs font-bold text-slate-700"><div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center"><i data-lucide="rocking-chair" class="w-3 h-3 text-slate-500"></i></div> Seat 2-2 Standar Reclining</div>
+                                <div class="flex items-center gap-3 text-xs font-bold text-slate-700"><div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center"><i data-lucide="utensils" class="w-3 h-3 text-slate-500"></i></div> Makan Prasmanan Gratis 1x</div>
+                                <div class="flex items-center gap-3 text-xs font-bold text-slate-700"><div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center"><i data-lucide="tv" class="w-3 h-3 text-slate-500"></i></div> Hiburan TV LCD Sentral</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] flex-shrink-0 bg-white rounded-[24px] overflow-hidden shadow-md border border-slate-200 group relative transform hover:-translate-y-2 transition-all duration-500 cursor-pointer hover:shadow-xl">
+                        <div class="absolute top-4 left-4 bg-purple-600 text-white text-[10px] font-black px-3 py-1 rounded shadow-md tracking-widest z-20">EKSEKUTIF 2-1</div>
+                        <div class="h-48 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=2069&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-slate-900 to-transparent"></div>
+                            <div class="absolute bottom-3 left-5 text-white"><h3 class="text-xl font-black">Super Top Combi</h3></div>
+                        </div>
+                        <div class="p-5">
+                            <p class="text-xs text-slate-500 mb-4 h-8 font-medium">Konfigurasi kursi 2-1 paling eksklusif untuk ruang gerak ekstra lapang.</p>
+                            <div class="space-y-2.5 mb-5 border-t border-slate-100 pt-4">
+                                <div class="flex items-center gap-3 text-xs font-bold text-slate-700"><div class="w-6 h-6 rounded-full bg-purple-50 flex items-center justify-center"><i data-lucide="armchair" class="w-3 h-3 text-purple-600"></i></div> Seat 2-1 Jumbo Lapang</div>
+                                <div class="flex items-center gap-3 text-xs font-bold text-slate-700"><div class="w-6 h-6 rounded-full bg-purple-50 flex items-center justify-center"><i data-lucide="utensils" class="w-3 h-3 text-purple-600"></i></div> Makan Prasmanan Spesial</div>
+                                <div class="flex items-center gap-3 text-xs font-bold text-slate-700"><div class="w-6 h-6 rounded-full bg-purple-50 flex items-center justify-center"><i data-lucide="coffee" class="w-3 h-3 text-purple-600"></i></div> Snack & Air Mineral</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="relative py-32 mb-32 overflow-hidden reveal-up" id="stats-section">
+            <img src="https://images.unsplash.com/photo-1570125909232-eb263c188f7e?q=80&w=2071&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-90 brightness-50" alt="Fleet Background">
+            <div class="absolute inset-0 bg-gradient-to-r from-slate-900/80 to-transparent"></div>
+            <div class="relative z-10 max-w-7xl mx-auto px-4 lg:px-20 text-white">
+                <h2 class="text-4xl font-extrabold mb-4 tracking-tight">Rosalia Indah untuk Anda</h2>
+                <p class="text-base text-slate-300 max-w-2xl mb-16 leading-relaxed">Hadir lebih dekat untuk menjangkau setiap wilayah yang ada di Indonesia dengan armada dan fasilitas terbaik di kelasnya.</p>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-10 border-t border-white/20 pt-12">
+                    <div class="transform transition-transform duration-500 hover:-translate-y-2"><div class="text-xs uppercase tracking-widest text-slate-300 font-bold mb-3">Armada Reguler</div><div class="text-6xl font-black text-white flex items-baseline"><span class="counter-val text-brand-500 drop-shadow-lg" data-target="389">0</span></div></div>
+                    <div class="transform transition-transform duration-500 hover:-translate-y-2"><div class="text-xs uppercase tracking-widest text-slate-300 font-bold mb-3">Double Decker</div><div class="text-6xl font-black text-white flex items-baseline"><span class="counter-val text-brand-500 drop-shadow-lg" data-target="50">0</span></div></div>
+                    <div class="transform transition-transform duration-500 hover:-translate-y-2"><div class="text-xs uppercase tracking-widest text-slate-300 font-bold mb-3">Rute Aktif</div><div class="text-6xl font-black text-white flex items-baseline"><span class="counter-val text-brand-500 drop-shadow-lg" data-target="310">0</span></div></div>
+                    <div class="transform transition-transform duration-500 hover:-translate-y-2"><div class="text-xs uppercase tracking-widest text-slate-300 font-bold mb-3">Agen Tersebar</div><div class="text-6xl font-black text-white flex items-baseline"><span class="text-brand-500 drop-shadow-lg mr-1">+</span><span class="counter-val text-brand-500 drop-shadow-lg" data-target="250">0</span></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="max-w-7xl mx-auto px-4 lg:px-20 mb-32 reveal-up" id="beritaSection">
+            <div class="flex justify-between items-center mb-12">
+                <h2 class="text-4xl font-extrabold text-slate-900 tracking-tight">Berita Terbaru Rosalia Indah</h2>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 group cursor-pointer border border-slate-100 flex flex-col transition-all duration-700">
+                    <div class="h-80 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1560934069-b5014cc6144e?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000">
+                    </div>
+                    <div class="p-8 flex-1 bg-white relative">
+                        <div class="absolute -top-6 left-8 bg-brand-500 text-white text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-lg shadow-lg">Info Layanan</div>
+                        <h3 class="text-2xl font-bold text-slate-900 leading-snug mb-4 group-hover:text-brand-500 transition-colors mt-2">Akses Lebih Praktis, Rosalia Indah Travel Sediakan Titik Keberangkatan Baru</h3>
+                        <p class="text-sm text-slate-500 mb-8 line-clamp-2 leading-relaxed">Rosalia Indah resmi membuka titik layanan baru guna meningkatkan aksesibilitas pelanggan setia agar dapat langsung naik di beberapa titik strategis jalur utara...</p>
+                        <span class="text-brand-500 font-bold text-sm flex items-center gap-2 group-hover:translate-x-2 transition-transform">Lihat Selengkapnya <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col gap-6">
+                    <div class="flex gap-5 group cursor-pointer bg-white p-5 rounded-3xl shadow-sm border border-slate-100 items-center hover:shadow-xl hover:-translate-y-2 transition-all duration-700">
+                        <div class="w-44 h-32 rounded-2xl overflow-hidden shrink-0 relative">
+                            <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <h4 class="font-bold text-slate-900 text-lg leading-snug mb-3 group-hover:text-brand-500 transition-colors">Hadiri HPN Surakarta 2026, Rosalia Indah Pamerkan Inovasi Layanan</h4>
+                            <span class="text-brand-500 font-bold text-xs flex items-center gap-1 mt-1 group-hover:translate-x-1 transition-transform">Lihat Selengkapnya <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-5 group cursor-pointer bg-white p-5 rounded-3xl shadow-sm border border-slate-100 items-center hover:shadow-xl hover:-translate-y-2 transition-all duration-700">
+                        <div class="w-44 h-32 rounded-2xl overflow-hidden shrink-0 relative">
+                            <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=2069&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <h4 class="font-bold text-slate-900 text-lg leading-snug mb-3 group-hover:text-brand-500 transition-colors">Rosalia Indah Terima Kunjungan Ramp Check Persiapan Libur Nasional</h4>
+                            <span class="text-brand-500 font-bold text-xs flex items-center gap-1 mt-1 group-hover:translate-x-1 transition-transform">Lihat Selengkapnya <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-5 group cursor-pointer bg-white p-5 rounded-3xl shadow-sm border border-slate-100 items-center hover:shadow-xl hover:-translate-y-2 transition-all duration-700">
+                        <div class="w-44 h-32 rounded-2xl overflow-hidden shrink-0 relative">
+                            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <h4 class="font-bold text-slate-900 text-lg leading-snug mb-3 group-hover:text-brand-500 transition-colors">Penghargaan Transportasi Darat Terbaik 2026 Sukses Diraih Rosalia Indah</h4>
+                            <span class="text-brand-500 font-bold text-xs flex items-center gap-1 mt-1 group-hover:translate-x-1 transition-transform">Lihat Selengkapnya <i data-lucide="arrow-right" class="w-3 h-3"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="max-w-7xl mx-auto px-4 lg:px-20 mb-32 bg-white py-24 rounded-[48px] shadow-sm border border-slate-100 reveal-up">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6 px-4">
+                <h2 class="text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight">Jaringan Agen<br>Rosalia Indah</h2>
+                <p class="text-lg text-slate-500 max-w-lg text-right leading-relaxed">Rosalia Indah telah memiliki jaringan perwakilan agen resmi yang tersebar luas di wilayah Jawa dan Sumatera untuk melayani Anda.</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 px-4">
+                <div class="bg-slate-50 rounded-[32px] p-6 border border-slate-100 hover:border-brand-500 hover:shadow-xl hover:-translate-y-4 transition-all duration-700 cursor-pointer group">
+                    <div class="text-[11px] text-slate-400 font-bold uppercase mb-2 tracking-widest">Wilayah</div>
+                    <div class="font-extrabold text-slate-900 text-xl mb-1 group-hover:text-brand-500 transition-colors">Area Timur</div>
+                    <div class="text-sm text-brand-500 font-bold mb-6">60 Agen Rosalia Indah</div>
+                    <div class="h-48 rounded-2xl overflow-hidden border border-slate-200"><img src="https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?q=80&w=2071&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></div>
+                </div>
+                <div class="bg-slate-50 rounded-[32px] p-6 border border-slate-100 hover:border-brand-500 hover:shadow-xl hover:-translate-y-4 transition-all duration-700 cursor-pointer group">
+                    <div class="text-[11px] text-slate-400 font-bold uppercase mb-2 tracking-widest">Wilayah</div>
+                    <div class="font-extrabold text-slate-900 text-xl mb-1 group-hover:text-brand-500 transition-colors">Area Tengah</div>
+                    <div class="text-sm text-brand-500 font-bold mb-6">120 Agen Rosalia Indah</div>
+                    <div class="h-48 rounded-2xl overflow-hidden border border-slate-200"><img src="https://images.unsplash.com/photo-1584801055743-4ceea204f14e?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></div>
+                </div>
+                <div class="bg-slate-50 rounded-[32px] p-6 border border-slate-100 hover:border-brand-500 hover:shadow-xl hover:-translate-y-4 transition-all duration-700 cursor-pointer group">
+                    <div class="text-[11px] text-slate-400 font-bold uppercase mb-2 tracking-widest">Wilayah</div>
+                    <div class="font-extrabold text-slate-900 text-xl mb-1 group-hover:text-brand-500 transition-colors">Area Barat</div>
+                    <div class="text-sm text-brand-500 font-bold mb-6">150 Agen Rosalia Indah</div>
+                    <div class="h-48 rounded-2xl overflow-hidden border border-slate-200"><img src="https://images.unsplash.com/photo-1555899434-94d1368aa7af?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></div>
+                </div>
+                <div class="bg-slate-50 rounded-[32px] p-6 border border-slate-100 hover:border-brand-500 hover:shadow-xl hover:-translate-y-4 transition-all duration-700 cursor-pointer group">
+                    <div class="text-[11px] text-slate-400 font-bold uppercase mb-2 tracking-widest">Wilayah</div>
+                    <div class="font-extrabold text-slate-900 text-xl mb-1 group-hover:text-brand-500 transition-colors">Area Sumatera</div>
+                    <div class="text-sm text-brand-500 font-bold mb-6">80 Agen Rosalia Indah</div>
+                    <div class="h-48 rounded-2xl overflow-hidden border border-slate-200"><img src="https://images.unsplash.com/photo-1549402513-41c39050d276?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="max-w-4xl mx-auto px-4 lg:px-20 mb-32 reveal-up" id="faqSection">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-extrabold text-slate-900 tracking-tight">FAQ (Tanya Jawab)</h2>
+                <p class="text-lg text-slate-500 mt-3">Punya pertanyaan seputar layanan Rosalia Indah? Temukan jawabannya di bawah ini.</p>
+            </div>
+            <div class="space-y-4">
+                <details class="bg-white border border-slate-200 rounded-2xl group shadow-sm">
+                    <summary class="font-bold text-lg p-6 cursor-pointer flex justify-between items-center text-slate-800 group-hover:text-brand-500 transition-colors">
+                        Bagaimana cara membatalkan atau me-reschedule tiket?
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform duration-300"></i>
+                    </summary>
+                    <div class="px-6 pb-6 text-slate-600 leading-relaxed">Pembatalan dan perubahan jadwal tiket (reschedule) dapat dilakukan maksimal 1 hari sebelum keberangkatan melalui menu 'Tiket Saya' di aplikasi, atau langsung mengunjungi Agen Rosalia Indah terdekat dengan membawa KTP asli. Syarat dan ketentuan pemotongan biaya berlaku.</div>
+                </details>
+                <details class="bg-white border border-slate-200 rounded-2xl group shadow-sm">
+                    <summary class="font-bold text-lg p-6 cursor-pointer flex justify-between items-center text-slate-800 group-hover:text-brand-500 transition-colors">
+                        Apakah tersedia layanan makan gratis selama perjalanan?
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform duration-300"></i>
+                    </summary>
+                    <div class="px-6 pb-6 text-slate-600 leading-relaxed">Ya, setiap pembelian tiket kelas VIP, Executive Plus, Super Top, hingga First Class Double Decker sudah termasuk fasilitas layanan makan prasmanan gratis 1x di Restoran Rosalia Indah (Sari Rasa) yang berada di rute perjalanan Anda.</div>
+                </details>
+                <details class="bg-white border border-slate-200 rounded-2xl group shadow-sm">
+                    <summary class="font-bold text-lg p-6 cursor-pointer flex justify-between items-center text-slate-800 group-hover:text-brand-500 transition-colors">
+                        Berapa batas maksimal barang bawaan (bagasi)?
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform duration-300"></i>
+                    </summary>
+                    <div class="px-6 pb-6 text-slate-600 leading-relaxed">Batas maksimal bagasi gratis untuk setiap penumpang adalah 15 kg. Jika melebihi kapasitas tersebut, barang akan dikenakan biaya overbaggage atau disarankan dikirim melalui layanan ekspedisi Rosalia Express.</div>
+                </details>
+            </div>
+        </section>
+
+    </div> <footer class="bg-[#0f172a] pt-20 pb-10 px-4 lg:px-20 w-full text-white relative z-0 mt-8 reveal-up" id="footerSection">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-16">
+                
+                <div class="lg:col-span-2">
+                    <div class="flex items-center gap-2 bg-white px-4 py-2 rounded-xl w-fit mb-6 shadow-lg">
+                        <div class="w-8 h-8 flex items-center justify-center">
+                            <svg viewBox="0 0 100 100" class="w-full h-full"><rect width="100" height="100" fill="#0072BE" rx="20"/><rect x="5" y="5" width="90" height="90" fill="#FFD200" rx="15"/><text x="50" y="70" font-size="50" font-family="Arial" font-weight="bold" fill="#E31837" text-anchor="middle">ri</text></svg>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-brand-500 font-black text-sm leading-none tracking-tight">ROSALIA INDAH</span>
+                            <span class="text-[7px] text-slate-500 font-bold tracking-widest uppercase mt-0.5">Mitra Setia Perjalanan Anda</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-slate-400 leading-relaxed mb-6">Pelopor transportasi darat dengan pelayanan premium dan fasilitas kelas satu. Menjangkau seluruh wilayah Jawa dan Sumatera untuk kenyamanan perjalanan Anda.</p>
+                    
+                    <div class="space-y-4 text-sm text-slate-300">
+                        <div class="flex items-start gap-3">
+                            <i data-lucide="map-pin" class="w-5 h-5 text-brand-500 shrink-0"></i>
+                            <span>Jl. Raya Solo - Sragen Km 7,5 Palur, Karanganyar - Jawa Tengah 57771</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="phone" class="w-5 h-5 text-brand-500 shrink-0"></i>
+                            <span class="font-bold text-white text-lg">0271 - 3000030</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="mail" class="w-5 h-5 text-brand-500 shrink-0"></i>
+                            <span>cs@rosalia-indah.co.id</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1">
+                    <h4 class="font-bold text-lg mb-6 text-white border-b border-white/10 pb-3 inline-block">Perusahaan</h4>
+                    <ul class="space-y-3 text-sm text-slate-400">
+                        <li><a href="#" class="hover:text-brand-500 transition-colors">Tentang Kami</a></li>
+                        <li><a href="#" class="hover:text-brand-500 transition-colors">Visi & Misi</a></li>
+                        <li><a href="#" class="hover:text-brand-500 transition-colors">Penghargaan</a></li>
+                        <li><a href="#" class="hover:text-brand-500 transition-colors">Karir</a></li>
+                        <li><a href="#" class="hover:text-brand-500 transition-colors">Hubungi Kami</a></li>
+                    </ul>
+                </div>
+
+                <div class="lg:col-span-1">
+                    <h4 class="font-bold text-lg mb-6 text-white border-b border-white/10 pb-3 inline-block">Layanan</h4>
+                    <ul class="space-y-3 text-sm text-slate-400">
+                        <li><a href="#" class="hover:text-brand-500 transition-colors">Pesan Tiket Bus</a></li>
+                        <li><a href="#" class="hover:text-brand-500 transition-colors">Cek Jadwal</a></li>
+                        <li><a href="#" class="hover:text-brand-500 transition-colors">Lokasi Agen</a></li>
+                        <li><a href="#" class="hover:text-brand-500 transition-colors">Rosalia Express</a></li>
+                        <li><a href="#" class="hover:text-brand-500 transition-colors">Syarat & Ketentuan</a></li>
+                    </ul>
+                </div>
+
+                <div class="lg:col-span-1">
+                    <h4 class="font-bold text-lg mb-6 text-white border-b border-white/10 pb-3 inline-block">Aplikasi Kami</h4>
+                    <div class="flex flex-col gap-3 mb-8">
+                        <a href="#" class="bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl p-2.5 flex items-center gap-3 transition-colors group">
+                            <i data-lucide="play" class="w-6 h-6 text-white group-hover:scale-110 transition-transform"></i>
+                            <div><div class="text-[8px] uppercase tracking-wider text-slate-400">GET IT ON</div><div class="font-bold text-sm leading-none text-white">Google Play</div></div>
+                        </a>
+                        <a href="#" class="bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl p-2.5 flex items-center gap-3 transition-colors group">
+                            <i data-lucide="apple" class="w-6 h-6 text-white group-hover:scale-110 transition-transform"></i>
+                            <div><div class="text-[8px] uppercase tracking-wider text-slate-400">Download on the</div><div class="font-bold text-sm leading-none text-white">App Store</div></div>
+                        </a>
+                    </div>
+                    
+                    <h4 class="font-bold text-lg mb-4 text-white">Metode Pembayaran</h4>
+                    <div class="flex gap-2 flex-wrap">
+                        <div class="bg-white px-2.5 py-1 rounded-md text-xs font-black text-blue-800 shadow-sm">BCA</div>
+                        <div class="bg-white px-2.5 py-1 rounded-md text-xs font-black text-orange-600 shadow-sm">BNI</div>
+                        <div class="bg-white px-2.5 py-1 rounded-md text-xs font-black text-yellow-600 shadow-sm">MANDIRI</div>
+                        <div class="bg-white px-2.5 py-1 rounded-md text-xs font-black text-blue-600 shadow-sm">BRI</div>
+                        <div class="bg-white px-2.5 py-1 rounded-md text-xs font-black text-red-600 shadow-sm">QRIS</div>
+                        <div class="bg-white px-2.5 py-1 rounded-md text-xs font-black text-blue-500 shadow-sm">GoPay</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-slate-500">
+                <div class="text-center md:text-left mb-4 md:mb-0">&copy; 2026 PT. Rosalia Indah Transport. All Rights Reserved.</div>
+                <div class="flex gap-5">
+                    <a href="#" class="hover:text-brand-500 transition-colors transform hover:-translate-y-1"><i data-lucide="facebook" class="w-5 h-5 fill-current"></i></a>
+                    <a href="#" class="hover:text-brand-500 transition-colors transform hover:-translate-y-1"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                    <a href="#" class="hover:text-brand-500 transition-colors transform hover:-translate-y-1"><i data-lucide="youtube" class="w-5 h-5"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // ---------------- INITIAL LOADER HIDE ----------------
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('initialLoader');
+                loader.style.opacity = '0';
+                setTimeout(() => { loader.style.display = 'none'; }, 800);
+            }, 1800); 
+        });
+
+        // ---------------- NAVBAR STICKY ----------------
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('mainNavbar');
+            if (window.scrollY > 30) {
+                navbar.classList.remove('bg-gradient-to-b', 'from-slate-900/90', 'to-transparent', 'py-5');
+                navbar.classList.add('bg-slate-900/95', 'backdrop-blur-md', 'shadow-md', 'py-3');
+            } else {
+                navbar.classList.add('bg-gradient-to-b', 'from-slate-900/90', 'to-transparent', 'py-5');
+                navbar.classList.remove('bg-slate-900/95', 'backdrop-blur-md', 'shadow-md', 'py-3');
+            }
+        });
+
+        // ---------------- OBSERVERS ----------------
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('active'); obs.unobserve(entry.target); } });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal-up').forEach(el => observer.observe(el));
+
+        // ---------------- CAROUSEL LOGIC ----------------
+        const slides = document.querySelectorAll('.hero-slide');
+        let currentSlide = 0;
+        setInterval(() => {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }, 5000);
+
+        let currentPromo = 0; const totalPromo = 3;
+        function movePromo(index) {
+            currentPromo = index;
+            document.getElementById('promoCarousel').style.transform = `translateX(-${currentPromo * 33.333}%)`;
+            document.querySelectorAll('.promo-dot').forEach((d, i) => {
+                d.className = i === currentPromo 
+                    ? "promo-dot w-8 h-3 rounded-full bg-white transition-all duration-500 ease-out-expo active" 
+                    : "promo-dot w-3 h-3 rounded-full bg-white/50 hover:bg-white transition-colors duration-300";
+            });
+        }
+        setInterval(() => { movePromo((currentPromo + 1) % totalPromo); }, 5000);
+
+        // ---------------- ARMADA AUTO SLIDER ----------------
+        const armadaTrack = document.getElementById('armadaSliderTrack');
+        let armadaIndex = 0;
+        setInterval(() => {
+            if(window.innerWidth >= 1024) { 
+                armadaIndex = armadaIndex === 0 ? 1 : 0;
+                armadaTrack.style.transform = `translateX(-${armadaIndex * 33.33}%)`;
+            } else if (window.innerWidth >= 768) { 
+                armadaIndex = (armadaIndex + 1) % 3;
+                armadaTrack.style.transform = `translateX(-${armadaIndex * 50}%)`;
+            } else { 
+                armadaIndex = (armadaIndex + 1) % 4;
+                armadaTrack.style.transform = `translateX(-${armadaIndex * 100}%)`;
+            }
+        }, 4000);
+
+        // ---------------- MODAL LOKASI ----------------
+        const locationsData = [
+            { province: "Jawa Tengah", terminals: [{ name: "Terminal Tirtonadi", detail: "Solo" }, { name: "Terminal Tingkir", detail: "Salatiga" }, { name: "Terminal Mangkang", detail: "Semarang" }]},
+            { province: "DKI Jakarta", terminals: [{ name: "Terminal Pulo Gebang", detail: "Jakarta Timur" }, { name: "Terminal Kampung Rambutan", detail: "Jakarta Timur" }]},
+            { province: "Jawa Timur", terminals: [{ name: "Terminal Bungurasih", detail: "Surabaya" }, { name: "Terminal Arjosari", detail: "Malang" }]}
+        ];
+
+        let currentTargetId = ''; 
+        function openLocationModal(type) {
+            currentTargetId = 'text' + type; 
+            document.getElementById('modalTitle').innerText = 'Pilih ' + type;
+            document.getElementById('searchInput').value = ''; 
+            renderLocations(locationsData); 
+            document.getElementById('locationModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => document.getElementById('searchInput').focus(), 100);
+        }
+
+        function closeLocationModal() {
+            document.getElementById('locationModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function renderLocations(data) {
+            const container = document.getElementById('locationListContainer');
+            container.innerHTML = '';
+            data.forEach(group => {
+                let html = `<div class="mb-2"><div class="text-brand-500 font-extrabold text-[10px] mb-2 uppercase tracking-widest">${group.province}</div><div class="grid grid-cols-1 md:grid-cols-2 gap-2">`;
+                group.terminals.forEach(term => {
+                    html += `<label class="flex items-center gap-3 p-3 border border-slate-200 rounded-xl cursor-pointer hover:border-brand-500 hover:shadow-md bg-white transition-all group" onclick="selectLocation('${term.name}')"><div class="w-8 h-8 rounded bg-slate-50 flex items-center justify-center group-hover:bg-brand-50 transition-colors"><i data-lucide="bus-front" class="w-4 h-4 text-slate-400 group-hover:text-brand-500"></i></div><div><div class="font-bold text-sm text-slate-800">${term.name}</div><div class="text-[10px] font-medium text-slate-500">${term.detail}</div></div></label>`;
+                });
+                html += `</div></div>`;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+            lucide.createIcons(); 
+        }
+
+        function filterLocations() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = locationsData.map(g => {
+                const terms = g.terminals.filter(t => t.name.toLowerCase().includes(q) || t.detail.toLowerCase().includes(q));
+                return terms.length > 0 ? { province: g.province, terminals: terms } : null;
+            }).filter(g => g !== null); 
+            renderLocations(filtered);
+        }
+
+        function selectLocation(name) { document.getElementById(currentTargetId).innerText = name; closeLocationModal(); }
+
+        // ---------------- FIX EVENT PROPAGATION DROPDOWN ----------------
+        function toggleDropdown(id, e) {
+            if (e) e.stopPropagation(); 
+            document.querySelectorAll('.dropdown-menu').forEach(menu => { if(menu.id !== id) menu.classList.remove('active'); });
+            document.getElementById(id).classList.toggle('active');
+        }
+        
+        function selectOption(elId, val, dropId, e) {
+            if (e) e.stopPropagation();
+            document.getElementById(elId).innerText = val;
+            document.getElementById(dropId).classList.remove('active');
+        }
+        
+        document.addEventListener('click', (e) => {
+            if(!e.target.closest('.group.cursor-pointer') && !e.target.closest('.relative button')) {
+                document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('active'));
+            }
+        });
+
+        // ---------------- DATABASE TIKET ----------------
+        const ticketDatabase = [
+            { id: 1, time: "06:30", arrive: "20:45", class: "VIP Class", seats: 38, price: 320000, layout: "2+2", duration: "14j 15m", discount: 0, img: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=600&auto=format&fit=crop", premium: false },
+            { id: 2, time: "08:00", arrive: "22:15", class: "Executive Plus", seats: 28, price: 385200, layout: "2+2", duration: "14j 15m", discount: 10, img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=600&auto=format&fit=crop", premium: false },
+            { id: 3, time: "15:00", arrive: "04:30", class: "First Class", seats: 18, price: 552500, layout: "Sleeper", duration: "13j 30m", discount: 15, img: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=600&auto=format&fit=crop", premium: true },
+            { id: 4, time: "18:30", arrive: "08:45", class: "Executive Plus", seats: 28, price: 428000, layout: "2+2", duration: "14j 15m", discount: 0, img: "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?q=80&w=600&auto=format&fit=crop", premium: false }
+        ];
+
+        const paymentMethodsData = [
+            { id: 'bca', name: 'BCA Virtual Account', logo: '<span class="logo-bca text-2xl">BCA</span>' },
+            { id: 'mandiri', name: 'Mandiri VA', logo: '<span class="logo-mandiri text-xl">mandiri<div class="logo-mandiri-ribbon"></div></span>' },
+            { id: 'bni', name: 'BNI VA', logo: '<span class="text-orange-500 font-black italic text-2xl tracking-tighter">BNI</span>' },
+            { id: 'bri', name: 'BRIVA', logo: '<span class="text-blue-600 font-black text-2xl tracking-tighter">BRI</span>' },
+            { id: 'qris', name: 'QRIS', logo: '<span class="logo-qris text-xl">QRIS</span>' },
+            { id: 'gopay', name: 'GoPay', logo: '<span class="logo-gopay text-xl">gopay</span>' },
+            { id: 'shopee', name: 'ShopeePay', logo: '<span class="logo-shopee text-lg flex items-center gap-1"><i data-lucide="shopping-bag" class="w-4 h-4"></i> ShopeePay</span>' }
+        ];
+
+        const formatRp = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
+        let selectedSeatsState = {}; let selectedPaymentState = {};
+
+        // ---------------- PENCARIAN TIKET & KEMBALI ----------------
+        function cariTiket() {
+            const asal = document.getElementById('textAsal').innerText;
+            const tujuan = document.getElementById('textTujuan').innerText;
+            
+            document.getElementById('loadingSearchOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            setTimeout(() => {
+                document.getElementById('loadingSearchOverlay').classList.remove('active');
+                document.body.style.overflow = 'auto';
+
+                const heroSection = document.getElementById('heroSection');
+                heroSection.style.height = '35vh'; heroSection.style.minHeight = '300px';
+                document.getElementById('mainContentWrapper').style.display = 'none';
+
+                document.getElementById('resAsal').innerText = asal;
+                document.getElementById('resTujuan').innerText = tujuan;
+                const rawDate = document.getElementById('inputTanggal').value;
+                if(rawDate) document.getElementById('resTanggal').innerText = new Date(rawDate).toLocaleDateString('id-ID', {day: '2-digit', month: 'short', year: 'numeric'});
+                
+                // Murni panggil applySort tanpa error JS
+                applySort('terawal', null, true);
+                document.getElementById('searchResultsSection').classList.remove('hidden');
+                
+                setTimeout(() => window.scrollTo({ top: heroSection.offsetHeight - 50, behavior: 'smooth' }), 100);
+            }, 800);
+        }
+
+        function kembaliKeBeranda() {
+            document.getElementById('searchResultsSection').classList.add('hidden');
+            document.getElementById('mainContentWrapper').style.display = 'block';
+            
+            const heroSection = document.getElementById('heroSection');
+            heroSection.style.height = '75vh'; heroSection.style.minHeight = '600px';
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            selectedSeatsState = {}; selectedPaymentState = {};
+        }
+
+        function applySort(type, e, isInitial = false) {
+            if (e) e.stopPropagation(); 
+
+            let sortedTickets = [...ticketDatabase];
+            if(type === 'terawal') {
+                sortedTickets.sort((a, b) => a.time.localeCompare(b.time));
+                document.getElementById('sortLabel').innerHTML = `<i data-lucide="sliders-horizontal" class="w-4 h-4 text-slate-500"></i> Sortir Terawal`;
+            } else {
+                sortedTickets.sort((a, b) => a.price - b.price);
+                document.getElementById('sortLabel').innerHTML = `<i data-lucide="sliders-horizontal" class="w-4 h-4 text-slate-500"></i> Harga Termurah`;
+            }
+            document.getElementById('dropSort').classList.remove('active');
+            
+            selectedSeatsState = {}; selectedPaymentState = {};
+            document.getElementById('totalBus').innerText = sortedTickets.length;
+            
+            const asalStr = document.getElementById('textAsal').innerText;
+            const tujuanStr = document.getElementById('textTujuan').innerText;
+            renderTickets(sortedTickets, asalStr, tujuanStr);
+            
+            document.querySelectorAll('.result-card').forEach((card, i) => { setTimeout(() => card.classList.add('show'), isInitial ? i * 80 : i * 40); });
+        }
+
+        // ---------------- RENDER CARD TIKET (ELEGAN & PADAT) ----------------
+        function renderTickets(tickets, asal, tujuan) {
+            const container = document.getElementById('ticketsContainer');
+            container.innerHTML = ''; 
+
+            tickets.forEach(ticket => {
+                selectedSeatsState[ticket.id] = []; selectedPaymentState[ticket.id] = null;
+                
+                let priceSectionHTML = '';
+                if (ticket.discount > 0) {
+                    const originalPrice = ticket.price / (1 - (ticket.discount / 100));
+                    priceSectionHTML = `
+                        <div class="flex flex-col items-end gap-1">
+                            <div class="bg-red-50 text-red-600 border border-red-100 text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1 promo-shimmer shadow-sm uppercase tracking-widest">
+                                <i data-lucide="tags" class="w-3 h-3"></i> Hemat ${ticket.discount}%
+                            </div>
+                            <div class="text-xs font-bold text-slate-400 line-through mt-0.5">${formatRp(originalPrice)}</div>
+                            <div class="text-3xl font-black text-brand-500 tracking-tight">${formatRp(ticket.price)}</div>
+                        </div>
+                    `;
+                } else {
+                    priceSectionHTML = `<div class="text-3xl font-black text-[#0f172a] tracking-tight">${formatRp(ticket.price)}</div>`;
+                }
+
+                let paymentHTML = paymentMethodsData.map(m => `
+                    <div class="pay-method p-4 flex flex-col items-center justify-center h-16 w-full" id="pay-${ticket.id}-${m.id}" onclick="selectPayment(${ticket.id}, '${m.id}', '${m.name}')">
+                        ${m.logo}
+                    </div>
+                `).join('');
+
+                const isPremium = ticket.premium;
+                const borderClass = isPremium ? "premium-border" : "";
+                const headerColor = isPremium ? "bg-yellow-50 border-b border-yellow-100" : "bg-slate-50 border-b border-slate-100";
+                const badgeColor = isPremium ? "bg-yellow-500 text-slate-900" : "bg-[#0f172a] text-white";
+
+                const cardHTML = `
+                <div class="rounded-2xl shadow-sm overflow-hidden result-card flex flex-col ${borderClass}" id="ticket-card-${ticket.id}">
+                    
+                    <div class="${headerColor} px-6 py-3 flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <span class="${badgeColor} text-[10px] font-black px-2.5 py-1 rounded uppercase tracking-widest shadow-sm">${ticket.class}</span>
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Bus RI-20${ticket.id}</span>
+                        </div>
+                        <div class="flex gap-4 text-slate-400">
+                            <div class="flex items-center gap-1.5" title="Makan Prasmanan"><i data-lucide="utensils" class="w-4 h-4"></i> <span class="text-[10px] font-bold hidden md:inline">Makan</span></div>
+                            <div class="flex items-center gap-1.5" title="WiFi"><i data-lucide="wifi" class="w-4 h-4"></i> <span class="text-[10px] font-bold hidden md:inline">WiFi</span></div>
+                            <div class="flex items-center gap-1.5" title="AC"><i data-lucide="snowflake" class="w-4 h-4"></i> <span class="text-[10px] font-bold hidden md:inline">AC</span></div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row p-6 gap-6 items-center hover:bg-slate-50/30 transition-colors">
+                        <div class="w-full md:w-56 h-36 md:h-32 shrink-0 relative rounded-xl overflow-hidden shadow-sm border border-slate-200">
+                            <img src="${ticket.img}" class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-700" alt="Foto Bus">
+                        </div>
+
+                        <div class="flex-1 w-full flex items-center justify-between px-2 lg:px-6">
+                            <div class="text-left w-24">
+                                <div class="text-3xl font-black text-[#0f172a] tracking-tight">${ticket.time}</div>
+                                <div class="text-[11px] font-bold text-slate-400 mt-1 uppercase tracking-widest truncate" title="${asal}">${asal}</div>
+                            </div>
+                            <div class="flex-1 flex flex-col items-center px-4 relative">
+                                <div class="text-[10px] font-bold text-slate-500 mb-2 bg-white px-3 z-10 border border-slate-200 rounded-full py-0.5"><i data-lucide="clock" class="w-3 h-3 inline mr-1"></i> ${ticket.duration}</div>
+                                <div class="w-full h-[2px] bg-slate-200 absolute top-1/2 flex items-center justify-between">
+                                    <div class="w-2.5 h-2.5 rounded-full bg-slate-300"></div>
+                                    <div class="w-2.5 h-2.5 rounded-full bg-brand-500 shadow-[0_0_8px_rgba(232,91,42,0.5)]"></div>
+                                </div>
+                                <div class="text-[11px] font-bold text-slate-500 mt-2 tracking-widest">${ticket.layout} • ${ticket.seats} Kursi</div>
+                            </div>
+                            <div class="text-right w-24">
+                                <div class="text-3xl font-black text-[#0f172a] tracking-tight">${ticket.arrive}</div>
+                                <div class="text-[11px] font-bold text-slate-400 mt-1 uppercase tracking-widest truncate" title="${tujuan}">${tujuan}</div>
+                            </div>
+                        </div>
+
+                        <div class="w-full md:w-auto shrink-0 flex flex-row md:flex-col items-center md:items-end justify-between border-t md:border-t-0 md:border-l border-slate-200 pt-5 md:pt-0 pl-0 md:pl-6 gap-3 md:gap-4">
+                            ${priceSectionHTML}
+                            <button onclick="togglePesanKursi(${ticket.id}, event)" class="bg-brand-500 hover:bg-brand-600 text-white font-black py-3 px-8 rounded-xl transition-transform transform hover:-translate-y-1 shadow-[0_10px_20px_rgba(232,91,42,0.3)] text-sm whitespace-nowrap tracking-wide uppercase">Pilih Kursi</button>
+                        </div>
+                    </div>
+
+                    <div id="booking-area-${ticket.id}" class="hidden border-t border-slate-200 bg-[#f8fafc] p-8 flex flex-col lg:flex-row gap-10 shadow-inner">
+                        
+                        <div class="w-full lg:w-auto mx-auto lg:mx-0 shrink-0">
+                            <h4 class="font-black text-sm mb-4 tracking-widest uppercase text-slate-800">Denah Kabin</h4>
+                            <div class="bus-layout-container bg-white border-slate-200 shadow-sm">
+                                <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
+                                    <div class="bus-steering-wheel"></div>
+                                    <span class="font-bold text-[10px] text-slate-400 uppercase tracking-widest">Pintu Masuk</span>
+                                </div>
+                                <div class="grid gap-2 justify-center">${generateSeatGrid(ticket.id, ticket.layout)}</div>
+                            </div>
+                            
+                            <div class="flex justify-center items-center gap-5 mt-6 px-4 py-3 bg-white rounded-xl border border-slate-200 shadow-sm text-[11px]">
+                                <div class="flex items-center gap-1.5"><div class="w-4 h-4 bg-white border-2 border-slate-200 rounded-md"></div> <span class="font-bold text-slate-600">Kosong</span></div>
+                                <div class="flex items-center gap-1.5"><div class="w-4 h-4 bg-red-50 border-2 border-red-200 rounded-md"></div> <span class="font-bold text-slate-600">Terisi</span></div>
+                                <div class="flex items-center gap-1.5"><div class="w-4 h-4 bg-brand-500 rounded-md"></div> <span class="font-black text-brand-500">Dipilih</span></div>
+                            </div>
+                        </div>
+
+                        <div class="flex-1 flex flex-col">
+                            <div class="flex justify-between items-center mb-6">
+                                <h4 class="font-black text-2xl text-[#0f172a] tracking-tight">Detail Pemesanan</h4>
+                                <button onclick="togglePesanKursi(${ticket.id}, event)" class="text-xs font-bold text-slate-500 hover:text-red-500 flex items-center gap-1.5 transition-colors px-4 py-2 border border-slate-200 rounded-xl bg-white shadow-sm hover:bg-slate-50"><i data-lucide="x" class="w-4 h-4"></i> Tutup</button>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-2xl border border-slate-200 mb-5 shadow-sm focus-within:border-brand-500 focus-within:shadow-md transition-all">
+                                <label class="block text-xs font-black text-slate-800 uppercase tracking-widest mb-3">Nama Penumpang (Sesuai KTP) <span class="text-red-500">*</span></label>
+                                <input type="text" id="nama-penumpang-${ticket.id}" class="w-full border-2 border-slate-100 rounded-xl p-4 text-sm font-bold text-slate-800 outline-none focus:border-brand-500 focus:bg-white transition-all bg-slate-50" placeholder="Ketik nama lengkap..." oninput="validateBooking(${ticket.id})">
+                            </div>
+
+                            <div class="bg-white p-6 rounded-2xl border border-slate-200 mb-6 shadow-sm">
+                                <label class="block text-xs font-black text-slate-800 uppercase tracking-widest mb-4">Pilih Metode Pembayaran <span class="text-red-500">*</span></label>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">${paymentHTML}</div>
+                                <input type="hidden" id="selected-pay-name-${ticket.id}" value="">
+                            </div>
+                            
+                            <div class="mt-auto bg-[#0f172a] p-8 rounded-[24px] shadow-xl border border-slate-800 text-white flex flex-col md:flex-row justify-between items-center gap-6 relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-32 h-32 bg-brand-500/20 rounded-full blur-3xl pointer-events-none"></div>
+                                <div class="text-center md:text-left w-full md:w-auto relative z-10">
+                                    <span class="block text-slate-400 font-bold uppercase text-[11px] mb-1 tracking-widest">Kursi Terpilih: <span id="selected-seats-text-${ticket.id}" class="text-white">-</span></span>
+                                    <span class="block text-slate-400 font-bold uppercase text-[11px] mb-0.5 tracking-widest">Total Harga</span>
+                                    <span id="total-price-${ticket.id}" class="text-3xl font-black text-brand-500 tracking-tight">Rp 0</span>
+                                </div>
+                                <button id="btn-lanjut-${ticket.id}" onclick="prosesPembayaran(${ticket.id})" class="w-full md:w-auto px-10 relative z-10 bg-slate-800 text-slate-500 border border-slate-700 font-black py-4 rounded-xl cursor-not-allowed transition-all text-sm tracking-wide uppercase" disabled>Bayar Tiket</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+                container.insertAdjacentHTML('beforeend', cardHTML);
+            });
+            lucide.createIcons();
+        }
+
+        function generateSeatGrid(ticketId, layout) {
+            let gridHTML = ''; let seatNum = 1;
+            
+            if(layout === "2+2") {
+                for(let row = 0; row < 8; row++) {
+                    gridHTML += `<div class="flex gap-3">`; 
+                    for(let col = 0; col < 5; col++) {
+                        if (col === 2) { gridHTML += `<div class="w-6"></div>`; } 
+                        else {
+                            const isBooked = Math.random() > 0.70; 
+                            const statusClass = isBooked ? 'booked' : 'available';
+                            const clickEvent = isBooked ? '' : `onclick="toggleSeat(this, ${ticketId}, ${seatNum})"`;
+                            gridHTML += `<div class="seat ${statusClass}" ${clickEvent}>${seatNum}</div>`;
+                            seatNum++;
+                        }
+                    }
+                    gridHTML += `</div>`;
+                }
+            } else { // Sleeper / 2-1 Layout
+                for(let row = 0; row < 6; row++) {
+                    gridHTML += `<div class="flex gap-4">`; 
+                    for(let col = 0; col < 4; col++) {
+                        if (col === 1 || col === 2) { gridHTML += `<div class="w-6"></div>`; } 
+                        else {
+                            const isBooked = Math.random() > 0.60; 
+                            const statusClass = isBooked ? 'booked' : 'available';
+                            const clickEvent = isBooked ? '' : `onclick="toggleSeat(this, ${ticketId}, ${seatNum})"`;
+                            gridHTML += `<div class="seat ${statusClass} w-12 h-12 text-sm" ${clickEvent}>${seatNum}</div>`;
+                            seatNum++;
+                        }
+                    }
+                    gridHTML += `</div>`;
+                }
+            }
+            return gridHTML;
+        }
+
+        function togglePesanKursi(ticketId, event) {
+            if(event && event.target.closest('.hidden') === null && document.getElementById(`booking-area-${ticketId}`).classList.contains('hidden') === false && event.target.tagName !== 'BUTTON'){
+                return;
+            }
+
+            document.querySelectorAll('[id^="booking-area-"]').forEach(el => { 
+                if(el.id !== `booking-area-${ticketId}`) el.classList.add('hidden'); 
+            });
+            const area = document.getElementById(`booking-area-${ticketId}`);
+            area.classList.toggle('hidden');
+            
+            if(!area.classList.contains('hidden')) { 
+                setTimeout(() => window.scrollTo({ top: document.getElementById(`ticket-card-${ticketId}`).offsetTop - 40, behavior: 'smooth' }), 100); 
+            }
+        }
+
+        function toggleSeat(el, tId, sNum) {
+            if(el.classList.contains('booked')) return;
+            if (el.classList.contains('selected')) {
+                el.classList.remove('selected');
+                selectedSeatsState[tId] = selectedSeatsState[tId].filter(n => n !== sNum);
+            } else {
+                if(selectedSeatsState[tId].length >= 4) return alert("Maksimal pilih 4 kursi per transaksi!");
+                el.classList.add('selected');
+                selectedSeatsState[tId].push(sNum);
+            }
+            updateBookingSummary(tId);
+        }
+
+        function selectPayment(tId, mId, mName) {
+            document.querySelectorAll(`[id^="pay-${tId}-"]`).forEach(el => el.classList.remove('active'));
+            document.getElementById(`pay-${tId}-${mId}`).classList.add('active');
+            selectedPaymentState[tId] = mId;
+            document.getElementById(`selected-pay-name-${tId}`).value = mName; 
+            validateBooking(tId);
+        }
+
+        function updateBookingSummary(tId) {
+            const seats = selectedSeatsState[tId].sort((a,b)=>a-b);
+            const ticketData = ticketDatabase.find(t => t.id === tId);
+            document.getElementById(`selected-seats-text-${tId}`).innerText = seats.length > 0 ? seats.join(', ') : '-';
+            document.getElementById(`total-price-${tId}`).innerText = formatRp(seats.length * ticketData.price);
+            validateBooking(tId); 
+        }
+
+        function validateBooking(tId) {
+            const btn = document.getElementById(`btn-lanjut-${tId}`);
+            if (selectedSeatsState[tId].length > 0 && document.getElementById(`nama-penumpang-${tId}`).value.trim() !== '' && selectedPaymentState[tId]) {
+                btn.disabled = false; btn.className = 'w-full md:w-auto px-10 relative z-10 bg-brand-500 text-white hover:bg-brand-600 font-black py-4 rounded-xl shadow-[0_15px_30px_rgba(232,91,42,0.4)] hover:-translate-y-1 transition-all text-sm tracking-wide uppercase';
+            } else {
+                btn.disabled = true; btn.className = 'w-full md:w-auto px-10 relative z-10 bg-slate-800 text-slate-500 border border-slate-700 font-black py-4 rounded-xl cursor-not-allowed transition-all text-sm tracking-wide uppercase';
+            }
+        }
+
+        function prosesPembayaran(tId) {
+            const tData = ticketDatabase.find(t => t.id === tId);
+            const d = new Date();
+            const dateStr = `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth()+1).padStart(2, '0')}.${String(d.getFullYear()).slice(2)}`;
+            const timeStr = `${String(d.getHours()).padStart(2, '0')}.${String(d.getMinutes()).padStart(2, '0')}`;
+            const trxId = `RI-${Math.floor(10000 + Math.random() * 90000)}`;
+            const totalBayar = selectedSeatsState[tId].length * tData.price;
+
+            document.getElementById('struk-tgl').innerText = `${dateStr}-${timeStr}`;
+            document.getElementById('struk-trx').innerText = trxId;
+            document.getElementById('struk-pay').innerText = document.getElementById(`selected-pay-name-${tId}`).value;
+            document.getElementById('struk-rute').innerText = `${document.getElementById('textAsal').innerText.substring(0,3).toUpperCase()}-${document.getElementById('textTujuan').innerText.substring(0,3).toUpperCase()}`;
+            document.getElementById('struk-berangkat').innerText = `${tData.time} WIB`;
+            document.getElementById('struk-kelas').innerText = tData.class.toUpperCase();
+            document.getElementById('struk-nama').innerText = document.getElementById(`nama-penumpang-${tId}`).value.trim();
+            document.getElementById('struk-kursi').innerText = selectedSeatsState[tId].join(', ');
+            document.getElementById('struk-total').innerText = formatRp(totalBayar);
+
+            let riwayatPemesanan = window.riwayatPemesanan || [];
+            riwayatPemesanan.push({
+                trx: trxId, date: `${dateStr} ${timeStr}`, name: document.getElementById(`nama-penumpang-${tId}`).value.trim(), rute: document.getElementById('struk-rute').innerText,
+                time: tData.time, class: tData.class, seats: selectedSeatsState[tId].join(', '), 
+                total: totalBayar, status: 'Berhasil'
+            });
+            window.riwayatPemesanan = riwayatPemesanan;
+            
+            document.getElementById('successModal').classList.add('active');
+            setTimeout(() => { document.getElementById('successModal').classList.remove('active'); document.getElementById('receiptModal').classList.add('active'); }, 2000);
+        }
+
+        function closeReceipt() {
+            document.getElementById('receiptModal').classList.remove('active');
+            setTimeout(() => {
+                kembaliKeBeranda();
+                toggleRiwayatModal();
+            }, 300);
+        }
+
+        // ---------------- RIWAYAT PEMESANAN (TIKET SAYA) ----------------
+        function toggleRiwayatModal() {
+            const modal = document.getElementById('riwayatModal');
+            const panel = document.getElementById('riwayatPanel');
+            
+            if(modal.classList.contains('opacity-0') || modal.style.opacity === '0') {
+                modal.classList.remove('opacity-0', 'pointer-events-none', 'hidden');
+                modal.style.opacity = '1';
+                modal.style.visibility = 'visible';
+                setTimeout(() => { panel.classList.remove('translate-x-full'); }, 50);
+                document.body.style.overflow = 'hidden';
+                updateRiwayatUI();
+            } else {
+                panel.classList.add('translate-x-full');
+                setTimeout(() => { 
+                    modal.style.opacity = '0';
+                    modal.style.visibility = 'hidden';
+                    modal.classList.add('opacity-0', 'pointer-events-none'); 
+                    document.body.style.overflow = 'auto';
+                }, 500); 
+            }
+        }
+
+        function updateRiwayatUI() {
+            const container = document.getElementById('riwayatContainer');
+            const badge = document.getElementById('badgeTiket');
+            let riwayat = window.riwayatPemesanan || [];
+            
+            if(riwayat.length > 0) {
+                badge.classList.remove('hidden');
+                badge.innerText = riwayat.length;
+                
+                let html = '';
+                for(let i = riwayat.length - 1; i >= 0; i--) {
+                    const r = riwayat[i];
+                    html += `
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 history-card relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-16 h-16 bg-slate-50 rounded-full opacity-50 pointer-events-none"></div>
+                        <div class="flex justify-between items-start mb-3 border-b border-slate-100 pb-3">
+                            <div>
+                                <div class="text-[10px] text-slate-400 font-bold tracking-widest uppercase mb-1">TRX: ${r.trx}</div>
+                                <div class="font-extrabold text-slate-900 text-lg tracking-tight">${r.rute}</div>
+                            </div>
+                            <div class="bg-green-100 text-green-700 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded shadow-sm border border-green-200">${r.status}</div>
+                        </div>
+                        <div class="text-sm text-slate-600 space-y-1.5 mb-4 font-medium">
+                            <div class="flex justify-between"><span>Nama:</span><span class="font-bold text-slate-900">${r.name}</span></div>
+                            <div class="flex justify-between"><span>Jadwal:</span><span class="font-bold text-slate-900">${r.time} WIB</span></div>
+                            <div class="flex justify-between"><span>Kelas:</span><span class="font-bold text-slate-900">${r.class}</span></div>
+                            <div class="flex justify-between"><span>Kursi:</span><span class="font-black text-brand-500">${r.seats}</span></div>
+                        </div>
+                        <div class="flex justify-between items-center border-t border-slate-100 pt-3">
+                            <span class="text-xs font-bold text-slate-400">${r.date}</span>
+                            <span class="font-black text-slate-900 text-lg">${formatRp(r.total)}</span>
+                        </div>
+                    </div>`;
+                }
+                container.innerHTML = html;
+            }
+        }
+
+        // ---------------- STATS COUNTER ----------------
+        const runCounter = () => {
+            document.querySelectorAll('.counter-val').forEach(counter => {
+                const updateCount = () => {
+                    const target = +counter.getAttribute('data-target');
+                    const count = +counter.innerText;
+                    const inc = target / 100;
+                    if (count < target) { counter.innerText = Math.ceil(count + inc); setTimeout(updateCount, 20); } 
+                    else { counter.innerText = target; }
+                };
+                updateCount();
+            });
+        };
+        const statsSection = document.getElementById('stats-section');
+        if (statsSection) {
+            new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => { if (entry.isIntersecting) { runCounter(); obs.unobserve(entry.target); } });
+            }, { threshold: 0.5 }).observe(statsSection);
+        }
+
+    </script>
+</body>
+</html>
